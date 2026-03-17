@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendamento Lab GrID</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>Sistema de agendamento do GrID</h1>
+        <p>Selecione uma opção e reserve um horário.</p>
+        <img src="assets/logo_GrID.png" alt="Logo: GrID, Grupo de Inteligência de Dados" class="logo-lab">
+    </header>
+
+    <main>
+        <section class="controles">
+            <div id="container-equipamentos" style="margin-bottom: 5px auto; margin-top: 20px auto; width: 100%; padding: 15px; border-left: 5px solid #007bff; background-color: #f8f9fa; border-radius: 4px;">
+                <strong>INFORMAÇÕES GERAIS:</strong>
+                <p id="texto-equipamentos" style="margin-top: 5px; color: #555;"><strong>1.</strong> Utilize roupas apropriadas para o ambiente de laboratório;</p>
+                <p id="texto-equipamentos" style="margin-top: 5px; color: #555;"><strong>2.</strong> Caso alguma máquina não esteja funcionando corretamente, informe imediatamente ao responsável pelo laboratório;</p>
+                <p id="texto-equipamentos" style="margin-top: 5px; color: #555;"><strong>3.</strong> Mantenha o laboratório limpo, organizado e evitar barulho;</p>
+                <p id="texto-equipamentos" style="margin-top: 5px; color: #555;"><strong>4.</strong> O uso de equipamentos fora do horário previsto pode ocorrer, desde que não interfira nas reservas registradas no sistema: <a href="https://grid-lab-04.github.io/reservation/">https://grid-lab-04.github.io/reservation/.</a></p>
+            </div>
+            
+            <div id="container-instrucoes" style="margin-bottom: 20px auto; margin-top: 5px auto; width: 100%; padding: 15px; border-left: 5px solid #f39c12; background-color: #f8f9fa; border-radius: 4px;">
+                <strong>INSTRUÇÕES DE USO:</strong>
+                <p id="texto-instrucoes" style="margin-top: 5px; color: #555;">Carregando...</p>
+            </div>
+
+            <div class="linha">
+                <label for="data">Data:</label>
+                <input type="date" id="data">
+
+                <label for="maquina">Opções:</label>
+                <select id="maquina">
+                    <option value="1">Computador 01 - Alto desempenho</option>
+                    <option value="2">Computador 02 - Alto desempenho</option>
+                    <option value="3">Computador 03 - FLEXPAVE</option>
+                    <option value="4">Computador 04 - Básico</option>
+                    <option value="5">Computador 05 - Básico</option>
+                    <option value="6">Computador 06 - Básico</option>
+                    <option value="7">Impressora 3D 01 - Creality</option>
+                    <option value="8">Impressora 3D 02 - Bambu Lab</option>
+                    <option value="9">Sala - Reunião fechada</option>
+                </select>
+            </div>
+            
+                <div class="linha-seguranca">
+                    <input type="text" id="nome" placeholder="Nome e sobrenome">
+                    <input type="email" id="email" placeholder="E-mail de contato">
+                    <input type="text" id="orientador" placeholder="Nome do orientador">
+                </div>
+
+            <div id="campos-impressora" style="display: none; margin-top: 15px; padding: 15px; width: 100%; background-color: #fff3cd; border-radius: 8px; border: 1px solid #ffeeba;">
+                <h4 style="margin-bottom: 10px; color: #856404;">Informações de Impressão</h4>
+                <div class="linha">
+                    <label for="material">Material estimado (g):</label>
+                    <input type="text" id="material" placeholder="Ex: 50 (vermelho) e 100 (preto)">
+                    
+                    <label for="destino">Destino/Projeto:</label>
+                    <input type="text" id="destino" placeholder="Ex: Pesquisa - Peça X">
+                </div>
+            </div>
+
+            <div class="area-confirmacao">
+                <div class="bloco-acao">
+                    <input type="password" id="senha-lab" placeholder="Senha">
+                    <button id="btn-confirmar" onclick="reservarSelecionados()">
+                        Confirmar Reservas Selecionadas
+                    </button>
+                    <p class="aviso-cancelamento">
+                        Solicitação de <strong>CANCELAMENTO</strong> apenas via e-mail: 
+                        <a href="mailto:jorgelucas@det.ufc.br">grid@det.ufc.br</a>
+                    </p>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="agenda">
+            <table id="tabela-horarios">
+                <thead>
+                    <tr>
+                        <th>Horário</th>
+                        <th>Status</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody id="corpo-agenda">
+                    </tbody>
+            </table>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
