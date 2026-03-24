@@ -3,94 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agendamento Lab GrID</title>
+    <title>Agendamento Lab do PISTA</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <header>
-        <h1>Sistema de agendamento do GrID</h1>
-        <p>Selecione uma opção e reserve um horário.</p>
-        <img src="assets/logo_GrID.png" alt="Logo: GrID, Grupo de Inteligência de Dados" class="logo-lab">
+        <h1>Sistema de agendamento do PISTA</h1>
+        <p>Preencha as informações para solicitar o uso do laboratório.</p>
+        <img src="assets/logo_PISTA.jpeg" alt="Logo: PISTA" class="logo-lab">
     </header>
 
     <main>
         <section class="controles">
-            <div id="container-equipamentos" style="margin-bottom: 5px auto; margin-top: 20px auto; width: 100%; padding: 15px; border-left: 5px solid #007bff; background-color: #f8f9fa; border-radius: 4px;">
+            <div id="container-equipamentos" style="margin-bottom: 20px; width: 100%; padding: 15px; border-left: 5px solid #007bff; background-color: #f8f9fa; border-radius: 4px;">
                 <strong>INFORMAÇÕES GERAIS:</strong>
-                <p id="texto-equipamentos" style="margin-top: 5px; color: #555;"><strong>1.</strong> Utilize roupas apropriadas para o ambiente de laboratório;</p>
-                <p id="texto-equipamentos" style="margin-top: 5px; color: #555;"><strong>2.</strong> Caso alguma máquina não esteja funcionando corretamente, informe imediatamente ao responsável pelo laboratório;</p>
-                <p id="texto-equipamentos" style="margin-top: 5px; color: #555;"><strong>3.</strong> Mantenha o laboratório limpo, organizado e evitar barulho;</p>
-                <p id="texto-equipamentos" style="margin-top: 5px; color: #555;"><strong>4.</strong> O uso de equipamentos fora do horário previsto pode ocorrer, desde que não interfira nas reservas registradas no sistema: <a href="https://grid-lab-04.github.io/reservation/">https://grid-lab-04.github.io/reservation/.</a></p>
-            </div>
-            
-            <div id="container-instrucoes" style="margin-bottom: 20px auto; margin-top: 5px auto; width: 100%; padding: 15px; border-left: 5px solid #f39c12; background-color: #f8f9fa; border-radius: 4px;">
-                <strong>INSTRUÇÕES DE USO:</strong>
-                <p id="texto-instrucoes" style="margin-top: 5px; color: #555;">Carregando...</p>
+                <p style="margin-top: 5px; color: #555;"><strong>01.</strong> Utilize vestimentas adequadas ao ambiente do laboratório; </p>
+                <p style="margin-top: 5px; color: #555;"><strong>02.</strong> É obrigatório o uso de calçados fechados;</p>
+                <p style="margin-top: 5px; color: #555;"><strong>03.</strong> Após o uso de equipamentos, acessórios e bancadas, mantenha tudo limpo e organizado;</p>
+                <p style="margin-top: 5px; color: #555;"><strong>04.</strong> Caso deixe materiais secando após lavagem, retorne ao laboratório no dia seguinte para guardá-los em seus devidos lugares;</p>
+                <p style="margin-top: 5px; color: #555;"><strong>05.</strong> Evite guardar materiais nas bandejas, pois estas são destinadas à secagem e à manipulação de amostras durante os ensaios.</p>
+                <p style="margin-top: 5px; color: #555;"><strong>06.</strong> Não acumule materiais em excesso no laboratório. Grandes volumes devem ser armazenados no subsolo.</p>
+                <p style="margin-top: 5px; color: #555;"><strong>07.</strong> Evite descartar materiais orgânicos nas lixeiras do laboratório;</p>
+                <p style="margin-top: 5px; color: #555;"><strong>08.</strong> Não utilize equipamentos sem treinamento prévio ou autorização;</p>
+                <p style="margin-top: 5px; color: #555;"><strong>09.</strong> Identifique suas amostras de forma clara;</p>
+                <p style="margin-top: 5px; color: #555;"><strong>10.</strong> Os agendamentos devem ser realizados até quinta-feira às 23:59h.</p>
             </div>
 
             <div class="linha">
                 <label for="data">Data:</label>
                 <input type="date" id="data">
 
-                <label for="maquina">Opções:</label>
-                <select id="maquina">
-                    <option value="1">Computador 01 - Alto desempenho</option>
-                    <option value="2">Computador 02 - Alto desempenho</option>
-                    <option value="3">Computador 03 - FLEXPAVE</option>
-                    <option value="4">Computador 04 - Básico</option>
-                    <option value="5">Computador 05 - Básico</option>
-                    <option value="6">Computador 06 - Básico</option>
-                    <option value="7">Impressora 3D 01 - Creality</option>
-                    <option value="8">Impressora 3D 02 - Bambu Lab</option>
-                    <option value="9">Sala - Reunião fechada</option>
-                </select>
+                <label for="horarios">Horários de início e término:</label>
+                <input type="text" id="horarios" placeholder="Ex: 08:00 às 12:00">
             </div>
             
-                <div class="linha-seguranca">
-                    <input type="text" id="nome" placeholder="Nome e sobrenome">
-                    <input type="email" id="email" placeholder="E-mail de contato">
-                    <input type="text" id="orientador" placeholder="Nome do orientador">
+            <div class="linha-seguranca">
+                <input type="text" id="nome" placeholder="Nome e sobrenome">
+                <input type="email" id="email" placeholder="E-mail de contato">
+                <input type="text" id="orientador" placeholder="Nome do orientador">
+            </div>
+
+            <div class="campos-solicitacao" style="display: flex; flex-direction: column; width: 100%; gap: 15px; margin-top: 15px;">
+                <div class="grupo-campo">
+                    <label for="ensaio" style="font-weight: bold; color: #34495e; margin-bottom: 5px; display: block;">Qual ensaio pretende fazer?</label>
+                    <input type="text" id="ensaio" placeholder="Ex.: Granulometria" style="width: 100%;">
                 </div>
 
-            <div id="campos-impressora" style="display: none; margin-top: 15px; padding: 15px; width: 100%; background-color: #fff3cd; border-radius: 8px; border: 1px solid #ffeeba;">
-                <h4 style="margin-bottom: 10px; color: #856404;">Informações de Impressão</h4>
-                <div class="linha">
-                    <label for="material">Material estimado (g):</label>
-                    <input type="text" id="material" placeholder="Ex: 50 (vermelho) e 100 (preto)">
-                    
-                    <label for="destino">Destino/Projeto:</label>
-                    <input type="text" id="destino" placeholder="Ex: Pesquisa - Peça X">
+                <div class="grupo-campo">
+                    <label for="ajudante" style="font-weight: bold; color: #34495e; margin-bottom: 5px; display: block;">Vai levar alguém para lhe ajudar nos ensaios? Se sim, informe o nome:</label>
+                    <input type="text" id="ajudante" placeholder="Nome do ajudante ou 'Não'" style="width: 100%;">
+                </div>
+
+                <div class="grupo-campo">
+                    <label for="acessorios" style="font-weight: bold; color: #34495e; margin-bottom: 5px; display: block;">Quais equipamentos/acessórios precisará usar?</label>
+                    <input type="text" id="acessorios" placeholder="Ex: Balança, estufa, vidraria..." style="width: 100%;">
+                </div>
+
+                <div class="grupo-campo">
+                    <label for="motivo" style="font-weight: bold; color: #34495e; margin-bottom: 5px; display: block;">Qual o motivo da realização dos ensaios?</label>
+                    <input type="text" id="motivo" placeholder="Ex: Demanda do projeto X, disciplina Y..." style="width: 100%;">
                 </div>
             </div>
 
-            <div class="area-confirmacao">
+            <div class="area-confirmacao" style="margin-top: 20px;">
                 <div class="bloco-acao">
                     <input type="password" id="senha-lab" placeholder="Senha">
-                    <button id="btn-confirmar" onclick="reservarSelecionados()">
-                        Confirmar Reservas Selecionadas
+                    <button id="btn-confirmar" onclick="enviarSolicitacao()">
+                        Enviar Solicitação
                     </button>
                     <p class="aviso-cancelamento">
                         Solicitação de <strong>CANCELAMENTO</strong> apenas via e-mail: 
-                        <a href="mailto:jorgelucas@det.ufc.br">grid@det.ufc.br</a>
+                        <a href="mailto:assisfranco.eng@gmail.com">assisfranco.eng@gmail.com</a>
                     </p>
                 </div>
             </div>
-
-        </section>
-
-        <section class="agenda">
-            <table id="tabela-horarios">
-                <thead>
-                    <tr>
-                        <th>Horário</th>
-                        <th>Status</th>
-                        <th>Ação</th>
-                    </tr>
-                </thead>
-                <tbody id="corpo-agenda">
-                    </tbody>
-            </table>
         </section>
     </main>
 
