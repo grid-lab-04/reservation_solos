@@ -1,9 +1,78 @@
 const URL_API = "https://script.google.com/macros/s/AKfycbxSIGTUR6koKvMBNGWf6EEcvR-Phbjn5CUsM4usXRbObg3deK3r01q-dFkT1OTCaG7r/exec";
 
+document.addEventListener("DOMContentLoaded", function() {
+    const campoData = document.getElementById('data');
+    const hoje = new Date();
+    const diaDaSemana = hoje.getDay(); // 0 (Dom) a 6 (Sab)
+    
+    let dataMinima = new Date(hoje);
+
+    // Se hoje for de Domingo (0) até Quinta (4)
+    if (diaDaSemana <= 4) {
+        // A data mínima permitida é a SEGUNDA-FEIRA da PRÓXIMA semana
+        // Se hoje é domingo(0), soma 1. Se é segunda(1), soma 7...
+        let diasParaProximaSegunda = (diaDaSemana === 0) ? 1 : (8 - diaDaSemana);
+        dataMinima.setDate(hoje.getDate() + diasParaProximaSegunda);
+    } 
+    // Se hoje for Sexta (5) ou Sábado (6)
+    else {
+        // O prazo para a próxima semana acabou. 
+        // A data mínima permitida é a SEGUNDA-FEIRA da OUTRA semana (subsequente)
+        let diasParaSegundaSubsequente = (15 - diaDaSemana);
+        dataMinima.setDate(hoje.getDate() + diasParaSegundaSubsequente);
+    }
+
+    const dataFormatada = dataMinima.toISOString().split('T')[0];
+    campoData.setAttribute('min', dataFormatada);
+});
+
+function validarDataAgendamento(dataPretendidaString) {
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+
+    const partesData = dataPretendidaString.split('-');
+    const dataPretendida = new Date(partesData[0], partesData[1] - 1, partesData[2]);
+    dataPretendida.setHours(0, 0, 0, 0);
+
+    // 1. Impedir datas passadas
+    if (dataPretendida < hoje) {
+        return { valida: false, msg: "Não é possível agendar para uma data que já passou." };
+    }
+
+    // 2. Encontrar a SEGUNDA-FEIRA da próxima semana
+    const proximaSegunda = new Date(hoje);
+    const diasAteSegunda = (hoje.getDay() === 0) ? 1 : (8 - hoje.getDay());
+    proximaSegunda.setDate(hoje.getDate() + diasAteSegunda);
+    proximaSegunda.setHours(0, 0, 0, 0);
+
+    // 3. Verificar se a data pretendida é antes da próxima segunda permitida
+    if (dataPretendida < proximaSegunda) {
+        return { 
+            valida: false, 
+            msg: "Agendamentos só são permitidos a partir da segunda-feira da próxima semana." 
+        };
+    }
+
+    // 4. Validação de prazo: Se hoje já passou de Quinta, não pode agendar para a semana que vem
+    const limiteQuinta = new Date(proximaSegunda);
+    limiteQuinta.setDate(proximaSegunda.getDate() - 4); // Volta para a quinta-feira da semana de solicitação
+    
+    const domingoDaProximaSemana = new Date(proximaSegunda);
+    domingoDaProximaSemana.setDate(proximaSegunda.getDate() + 6);
+
+    if (hoje > limiteQuinta && dataPretendida <= domingoDaProximaSemana) {
+        return { 
+            valida: false, 
+            msg: "O prazo para agendar para a próxima semana encerrou na quinta-feira. Por favor, selecione uma data a partir da segunda-feira subsequente." 
+        };
+    }
+
+    return { valida: true };
+}
+
 async function enviarSolicitacao() {
     const btn = document.getElementById('btn-confirmar');
     
-    // Lista de IDs para coleta e validação
     const campos = [
         'data', 'horarios', 'nome', 'email', 'orientador', 
         'ensaio', 'ajudante', 'acessorios', 'motivo', 'senha-lab'
@@ -12,12 +81,10 @@ async function enviarSolicitacao() {
     const dados = {};
     let campoFaltando = false;
 
-    // Coleta os valores e verifica se estão preenchidos
     campos.forEach(id => {
-        const valor = document.getElementById(id).value.trim();
-        if (!valor) {
-            campoFaltando = true;
-        }
+        const elemento = document.getElementById(id);
+        const valor = elemento ? elemento.value.trim() : "";
+        if (!valor) campoFaltando = true;
         dados[id] = valor;
     });
 
@@ -26,7 +93,13 @@ async function enviarSolicitacao() {
         return;
     }
 
-    // Alterar estado do botão
+    // Validação da Regra de Negócio (Data e Prazo)
+    const validacao = validarDataAgendamento(dados.data);
+    if (!validacao.valida) {
+        alert(validacao.msg);
+        return;
+    }
+
     btn.disabled = true;
     btn.innerText = "Enviando solicitação...";
 
@@ -45,8 +118,10 @@ async function enviarSolicitacao() {
             alert("Senha incorreta! A solicitação não foi enviada.");
         } else if (resultado.includes("Sucesso")) {
             alert("Solicitação enviada com sucesso! Aguarde o contato do técnico por e-mail.");
-            // Limpa o formulário após sucesso
-            campos.forEach(id => document.getElementById(id).value = "");
+            campos.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = "";
+            });
         } else {
             alert("Ocorreu um erro inesperado: " + resultado);
         }
