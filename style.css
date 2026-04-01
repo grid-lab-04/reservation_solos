@@ -59,7 +59,7 @@ header p {
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    width: 100%;
+    width: 80%;
 }
 
 .linha label {
@@ -73,7 +73,8 @@ header p {
     gap: 12px;
     flex-wrap: wrap;
     justify-content: center;
-    width: 100%;
+    width: 80%;
+    flex-direction: column;
 }
 
 input, select {
