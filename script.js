@@ -70,6 +70,11 @@ function validarDataAgendamento(dataPretendidaString) {
     return { valida: true };
 }
 
+function validarEmail(email) {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(email);
+}
+
 async function enviarSolicitacao() {
     const btn = document.getElementById('btn-confirmar');
     
@@ -92,6 +97,8 @@ async function enviarSolicitacao() {
         alert("Por favor, preencha todos os campos do formulário antes de enviar.");
         return;
     }
+
+    if (!validarEmail(email))   return alert("Insira um e-mail válido.");
 
     // Validação da Regra de Negócio (Data e Prazo)
     const validacao = validarDataAgendamento(dados.data);
