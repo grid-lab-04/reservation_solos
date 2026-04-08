@@ -1,23 +1,29 @@
-const URL_API = "https://script.google.com/macros/s/AKfycbxSIGTUR6koKvMBNGWf6EEcvR-Phbjn5CUsM4usXRbObg3deK3r01q-dFkT1OTCaG7r/exec";
+// const URL_API = "https://script.google.com/macros/s/AKfycbxSIGTUR6koKvMBNGWf6EEcvR-Phbjn5CUsM4usXRbObg3deK3r01q-dFkT1OTCaG7r/exec";
+const URL_API = "https://script.google.com/macros/s/AKfycby-KqZpI4gPRu88Hik9noUvjvqxBpZYXO8luu8X1ujQCULf5FV1rSp8gLI6ESvrHRCT/exec";
+
+function validarEmail(email) {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(email);
+}
 
 document.addEventListener("DOMContentLoaded", function() {
     const campoData = document.getElementById('data');
     const hoje = new Date();
     const diaDaSemana = hoje.getDay(); // 0 (Dom) a 6 (Sab)
+    const horaAtual = hoje.getHours();
     
     let dataMinima = new Date(hoje);
 
-    // Se hoje for de Domingo (0) até Quinta (4)
-    if (diaDaSemana <= 4) {
-        // A data mínima permitida é a SEGUNDA-FEIRA da PRÓXIMA semana
-        // Se hoje é domingo(0), soma 1. Se é segunda(1), soma 7...
+    // Regra: Se for antes de Sexta 12:00h
+    // (diaDaSemana < 5) OU (diaDaSemana === 5 E hora < 12)
+    if (diaDaSemana < 5 || (diaDaSemana === 5 && horaAtual < 12)) {
+        // Permite agendar para a SEGUNDA-FEIRA da PRÓXIMA semana
         let diasParaProximaSegunda = (diaDaSemana === 0) ? 1 : (8 - diaDaSemana);
         dataMinima.setDate(hoje.getDate() + diasParaProximaSegunda);
     } 
-    // Se hoje for Sexta (5) ou Sábado (6)
+    // Se já passou de Sexta 12:00h
     else {
-        // O prazo para a próxima semana acabou. 
-        // A data mínima permitida é a SEGUNDA-FEIRA da OUTRA semana (subsequente)
+        // O prazo acabou. Mínimo permitido é a SEGUNDA-FEIRA da OUTRA semana
         let diasParaSegundaSubsequente = (15 - diaDaSemana);
         dataMinima.setDate(hoje.getDate() + diasParaSegundaSubsequente);
     }
@@ -28,6 +34,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 function validarDataAgendamento(dataPretendidaString) {
     const hoje = new Date();
+    const horaAtual = hoje.getHours();
     hoje.setHours(0, 0, 0, 0);
 
     const partesData = dataPretendidaString.split('-');
@@ -53,26 +60,25 @@ function validarDataAgendamento(dataPretendidaString) {
         };
     }
 
-    // 4. Validação de prazo: Se hoje já passou de Quinta, não pode agendar para a semana que vem
-    const limiteQuinta = new Date(proximaSegunda);
-    limiteQuinta.setDate(proximaSegunda.getDate() - 4); // Volta para a quinta-feira da semana de solicitação
+    // 4. Validação de prazo: SEXTA-FEIRA às 12h00
+    const limiteSextaMeioDia = new Date(proximaSegunda);
+    limiteSextaMeioDia.setDate(proximaSegunda.getDate() - 3); // Volta para a sexta-feira anterior
+    limiteSextaMeioDia.setHours(12, 0, 0, 0);
+    
+    const agora = new Date(); // Data e hora real de agora
     
     const domingoDaProximaSemana = new Date(proximaSegunda);
     domingoDaProximaSemana.setDate(proximaSegunda.getDate() + 6);
 
-    if (hoje > limiteQuinta && dataPretendida <= domingoDaProximaSemana) {
+    // Se agora já passou de sexta 12h E a data escolhida for para a semana que vem
+    if (agora > limiteSextaMeioDia && dataPretendida <= domingoDaProximaSemana) {
         return { 
             valida: false, 
-            msg: "O prazo para agendar para a próxima semana encerrou na quinta-feira. Por favor, selecione uma data a partir da segunda-feira subsequente." 
+            msg: "O prazo para agendar para a próxima semana encerrou na sexta-feira às 12h. Por favor, selecione uma data a partir da segunda-feira subsequente." 
         };
     }
 
     return { valida: true };
-}
-
-function validarEmail(email) {
-  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return regex.test(email);
 }
 
 async function enviarSolicitacao() {
@@ -98,7 +104,12 @@ async function enviarSolicitacao() {
         return;
     }
 
-    if (!validarEmail(email))   return alert("Insira um e-mail válido.");
+    if (!validarEmail(dados.email)) {
+        alert("Por favor, insira um endereço de e-mail válido.");
+        const campoEmail = document.getElementById('email');
+        if (campoEmail) campoEmail.focus(); // Coloca o cursor no campo de e-mail para facilitar
+        return;
+    }
 
     // Validação da Regra de Negócio (Data e Prazo)
     const validacao = validarDataAgendamento(dados.data);
